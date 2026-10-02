@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Linkedin, Menu, X } from 'lucide-react';
 import { navLinks, profile } from '@/data/profile';
+import { scrollToSelector } from '@/lib/scroll';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -13,10 +15,23 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleNavClick = (href: string) => {
+  const closeMobileMenu = useCallback(() => {
     setMobileOpen(false);
-    const el = document.querySelector(href);
-    el?.scrollIntoView({ behavior: 'smooth' });
+    menuButtonRef.current?.focus({ preventScroll: true });
+  }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeMobileMenu();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileOpen, closeMobileMenu]);
+
+  const handleNavClick = (href: string) => {
+    if (mobileOpen) closeMobileMenu();
+    scrollToSelector(href);
   };
 
   return (
@@ -87,10 +102,12 @@ export function Navbar() {
 
           {/* Mobile menu button */}
           <button
+            ref={menuButtonRef}
             className="md:hidden text-slate-300 hover:text-cyan-300 transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
+            onClick={() => setMobileOpen((open) => !open)}
             aria-label="Toggle navigation"
             aria-expanded={mobileOpen}
+            aria-controls="mobile-nav"
           >
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -101,6 +118,7 @@ export function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            id="mobile-nav"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
