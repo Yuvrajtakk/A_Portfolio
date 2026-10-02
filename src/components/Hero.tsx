@@ -1,6 +1,9 @@
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, ArrowRight, Eye } from 'lucide-react';
 import { profile } from '@/data/profile';
+import { scrollToSelector } from '@/lib/scroll';
+import { pulseOpacity, useAmbientMotion } from '@/lib/ambientMotion';
 
 const pipelineSteps = [
   { label: 'VISION', icon: '◉' },
@@ -10,9 +13,13 @@ const pipelineSteps = [
 ];
 
 export function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const active = useAmbientMotion(sectionRef);
+
   return (
     <section
       id="home"
+      ref={sectionRef}
       className="relative min-h-screen flex items-center bg-cinematic bg-grid overflow-hidden"
     >
       {/* Subtle gradient orbs */}
@@ -68,7 +75,7 @@ export function Hero() {
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <button
-                onClick={() => document.querySelector('#work')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => scrollToSelector('#work')}
                 className="group inline-flex items-center gap-2 px-5 py-3 rounded-lg font-heading text-sm font-semibold transition-all duration-300 hover:scale-[1.02]"
                 style={{
                   backgroundColor: 'rgba(34, 211, 238, 0.1)',
@@ -137,16 +144,14 @@ export function Hero() {
                   <motion.span
                     className="absolute -left-1 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full"
                     style={{ backgroundColor: 'var(--color-accent-cyan)' }}
-                    animate={{ opacity: [0.3, 1, 0.3] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                    {...pulseOpacity(active, [0.3, 1, 0.3], { duration: 2, delay: i * 0.3 })}
                   />
                 </motion.div>
                 {i < pipelineSteps.length - 1 && (
                   <motion.div
                     className="h-8 w-px"
                     style={{ background: 'linear-gradient(to bottom, rgba(34,211,238,0.4), rgba(34,211,238,0.1))' }}
-                    animate={{ opacity: [0.3, 0.8, 0.3] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                    {...pulseOpacity(active, [0.3, 0.8, 0.3], { duration: 2, delay: i * 0.3 })}
                   />
                 )}
               </div>
@@ -167,8 +172,7 @@ export function Hero() {
           <motion.div
             className="h-8 w-px"
             style={{ background: 'linear-gradient(to bottom, var(--color-text-muted), transparent)' }}
-            animate={{ opacity: [0.3, 1, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            {...pulseOpacity(active, [0.3, 1, 0.3], { duration: 2 })}
           />
         </motion.div>
       </div>

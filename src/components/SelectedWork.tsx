@@ -6,7 +6,7 @@ import { SectionHeader, SectionWrapper } from './SectionHeader';
 import { ProjectVisual } from './ProjectVisual';
 
 interface SelectedWorkProps {
-  onProjectSelect: (project: Project) => void;
+  onProjectSelect: (project: Project, trigger: HTMLElement) => void;
 }
 
 export function SelectedWork({ onProjectSelect }: SelectedWorkProps) {
@@ -20,14 +20,14 @@ export function SelectedWork({ onProjectSelect }: SelectedWorkProps) {
 
       <div className="grid md:grid-cols-2 gap-5 md:gap-6">
         {projects.map((project, i) => (
-          <ProjectCard key={project.id} project={project} index={i} onSelect={() => onProjectSelect(project)} />
+          <ProjectCard key={project.id} project={project} index={i} onSelect={(trigger) => onProjectSelect(project, trigger)} />
         ))}
       </div>
     </SectionWrapper>
   );
 }
 
-function ProjectCard({ project, index, onSelect }: { project: Project; index: number; onSelect: () => void }) {
+function ProjectCard({ project, index, onSelect }: { project: Project; index: number; onSelect: (trigger: HTMLElement) => void }) {
   const statusLabel = {
     deployed: 'DEPLOYED',
     'in-progress': 'IN PROGRESS',
@@ -118,7 +118,7 @@ function ProjectCard({ project, index, onSelect }: { project: Project; index: nu
         <div className="mt-5 flex items-center justify-between">
           <button
             type="button"
-            onClick={onSelect}
+            onClick={(e) => onSelect(e.currentTarget)}
             className="inline-flex items-center gap-1.5 font-heading text-sm font-medium text-cyan-300 group-hover:gap-2.5 transition-all"
           >
             View Case Study
