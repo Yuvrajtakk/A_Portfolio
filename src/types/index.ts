@@ -47,7 +47,7 @@ export interface Project {
   github?: string;
   demo?: string;
   featured: boolean;
-  status: 'active' | 'in-progress' | 'academic';
+  status: 'deployed' | 'in-progress' | 'academic';
   caseStudy?: ProjectCaseStudy;
   visualId: string;
 }
