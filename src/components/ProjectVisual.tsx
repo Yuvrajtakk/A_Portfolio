@@ -195,7 +195,6 @@ function DefaultVisual() {
 
 function BoundingBox({ x, y, w, h, label, color, delay }: { x: string; y: string; w: string; h: string; label: string; color: string; delay: number }) {
   const borderColor = color === 'cyan' ? 'rgba(34,211,238,0.7)' : 'rgba(251,191,36,0.7)';
-  const textColor = color === 'cyan' ? '#22d3ee' : '#fbbf24';
   return (
     <motion.div
       className="absolute"
