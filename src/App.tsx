@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { SelectedWork } from '@/components/SelectedWork';
@@ -15,15 +16,9 @@ import type { Project } from '@/types';
 function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mediaQuery.matches) {
-      document.documentElement.style.scrollBehavior = 'auto';
-    }
-  }, []);
-
   return (
-    <div className="min-h-screen bg-cinematic">
+    <MotionConfig reducedMotion="user">
+      <div className="min-h-screen bg-cinematic">
       <Navbar />
       <main>
         <Hero />
@@ -37,7 +32,8 @@ function App() {
       </main>
       <Footer />
       <ProjectCaseStudy project={selectedProject} onClose={() => setSelectedProject(null)} />
-    </div>
+      </div>
+    </MotionConfig>
   );
 }
 

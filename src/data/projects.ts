@@ -15,7 +15,7 @@ export const projects: Project[] = [
     ],
     github: 'https://github.com/Yuvrajtakk/Traffic_Analysis_YOLO_project',
     featured: true,
-    status: 'active',
+    status: 'deployed',
     visualId: 'traffic',
     caseStudy: {
       overview:
@@ -72,7 +72,7 @@ export const projects: Project[] = [
     metrics: [
       { label: 'Dataset', value: '~100k orders', detail: '2016–2018, 9 relational tables, ~41k reviews' },
     ],
-    github: undefined,
+    github: 'https://github.com/Yuvrajtakk/logistics_chatbot',
     featured: true,
     status: 'in-progress',
     visualId: 'logistics',
@@ -126,7 +126,7 @@ export const projects: Project[] = [
     github: 'https://github.com/Yuvrajtakk/multi-object-tracking-assignment',
     demo: 'https://sportstracking.streamlit.app/',
     featured: true,
-    status: 'active',
+    status: 'deployed',
     visualId: 'sports',
     caseStudy: {
       overview:
@@ -176,13 +176,14 @@ export const projects: Project[] = [
     featured: true,
     status: 'academic',
     visualId: 'ckd',
+    github: 'https://github.com/Yuvrajtakk/CKD-Prediction-Project',
     caseStudy: {
       overview:
         'Academic machine-learning project for early Chronic Kidney Disease prediction using patient clinical data.',
       problem:
         'Early detection of chronic kidney disease from clinical data can support timely medical attention. This project explores applying machine learning to structured patient records.',
       approach:
-        'Applied standard ML preprocessing and modeling techniques to a clinical dataset with patient records.',
+        'Applied standard ML preprocessing and modeling techniques to a clinical dataset with patient records. The project was built as an academic machine-learning exercise, not as a clinical system.',
       technicalImplementation: [
         'Data cleaning and data-type correction',
         'Missing-value handling',
@@ -195,7 +196,6 @@ export const projects: Project[] = [
       ],
       limitations: [
         'Academic machine-learning project; not a clinical diagnostic system',
-        'Conflicting historical records about the exact final model and deployment status',
         'No clinical validity or medical usefulness is claimed',
       ],
     },
