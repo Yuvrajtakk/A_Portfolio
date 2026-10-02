@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MotionConfig } from 'framer-motion';
-import { Navbar' from '@/components/Navbar';
+import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { SelectedWork } from '@/components/SelectedWork';
 import { TechnicalFocus } from '@/components/TechnicalFocus';
