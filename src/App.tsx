@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
@@ -15,14 +15,35 @@ import type { Project } from '@/types';
 
 function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+
+  const handleSelect = useCallback((project: Project, trigger: HTMLElement) => {
+    openerRef.current = trigger;
+    setSelectedProject(project);
+  }, []);
+
+  const handleClose = useCallback(() => setSelectedProject(null), []);
+
+  // Make the page inert while the dialog is open; on close, return focus to the opener.
+  useEffect(() => {
+    const page = pageRef.current;
+    if (!page) return;
+    page.inert = selectedProject !== null;
+    if (selectedProject === null && openerRef.current) {
+      openerRef.current.focus();
+      openerRef.current = null;
+    }
+  }, [selectedProject]);
 
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen bg-cinematic">
+      <div ref={pageRef}>
       <Navbar />
       <main>
         <Hero />
-        <SelectedWork onProjectSelect={setSelectedProject} />
+        <SelectedWork onProjectSelect={handleSelect} />
         <TechnicalFocus />
         <Experience />
         <EducationSection />
@@ -31,7 +52,8 @@ function App() {
         <Contact />
       </main>
       <Footer />
-      <ProjectCaseStudy project={selectedProject} onClose={() => setSelectedProject(null)} />
+      </div>
+      <ProjectCaseStudy project={selectedProject} onClose={handleClose} />
       </div>
     </MotionConfig>
   );
