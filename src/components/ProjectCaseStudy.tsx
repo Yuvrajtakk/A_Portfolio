@@ -4,6 +4,8 @@ import type { Project } from '@/types';
 import { ProjectVisual } from './ProjectVisual';
 import { useEffect, useRef } from 'react';
 
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 interface ProjectCaseStudyProps {
   project: Project | null;
   onClose: () => void;
@@ -11,22 +13,48 @@ interface ProjectCaseStudyProps {
 
 export function ProjectCaseStudy({ project, onClose }: ProjectCaseStudyProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+  const isOpen = project !== null;
 
   useEffect(() => {
-    if (project) {
-      const previousOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      requestAnimationFrame(() => dialogRef.current?.focus());
-      const onKey = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') onClose();
-      };
-      window.addEventListener('keydown', onKey);
-      return () => {
-        document.body.style.overflow = previousOverflow;
-        window.removeEventListener('keydown', onKey);
-      };
-    }
-  }, [project, onClose]);
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const frame = requestAnimationFrame(() => dialogRef.current?.focus());
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onCloseRef.current();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE));
+      if (focusable.length === 0) {
+        e.preventDefault();
+        dialog.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || active === dialog || !dialog.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !dialog.contains(active))) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      cancelAnimationFrame(frame);
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [isOpen]);
 
   const cs = project?.caseStudy;
 
