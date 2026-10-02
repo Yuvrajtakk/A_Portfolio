@@ -9,7 +9,7 @@ export function Experience() {
       <SectionHeader
         label="EXPERIENCE"
         title="Where I've Worked"
-        description="Internships and training programs where I applied machine learning, computer vision, and LLM technologies to real problems."
+        description="Internships and training programs where I applied machine learning, computer vision, and LLM technologies through practical projects and experiments."
       />
 
       <div className="relative">
