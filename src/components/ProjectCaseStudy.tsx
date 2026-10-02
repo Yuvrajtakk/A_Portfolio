@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Github, ExternalLink, ArrowRight, AlertTriangle } from 'lucide-react';
 import type { Project } from '@/types';
 import { ProjectVisual } from './ProjectVisual';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface ProjectCaseStudyProps {
   project: Project | null;
@@ -10,15 +10,19 @@ interface ProjectCaseStudyProps {
 }
 
 export function ProjectCaseStudy({ project, onClose }: ProjectCaseStudyProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (project) {
+      const previousOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
+      requestAnimationFrame(() => dialogRef.current?.focus());
       const onKey = (e: KeyboardEvent) => {
         if (e.key === 'Escape') onClose();
       };
       window.addEventListener('keydown', onKey);
       return () => {
-        document.body.style.overflow = '';
+        document.body.style.overflow = previousOverflow;
         window.removeEventListener('keydown', onKey);
       };
     }
@@ -45,6 +49,11 @@ export function ProjectCaseStudy({ project, onClose }: ProjectCaseStudyProps) {
               exit={{ opacity: 0, y: 30, scale: 0.98 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
               className="relative w-full max-w-3xl rounded-2xl overflow-hidden"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="case-study-title"
+              tabIndex={-1}
+              ref={dialogRef}
               style={{ backgroundColor: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -74,7 +83,7 @@ export function ProjectCaseStudy({ project, onClose }: ProjectCaseStudyProps) {
                     {project.category}
                   </span>
                 </div>
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-slate-50">{project.title}</h2>
+                <h2 id="case-study-title" className="font-heading text-2xl md:text-3xl font-bold text-slate-50">{project.title}</h2>
                 <p className="mt-3 text-sm md:text-base leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
                   {project.shortDescription}
                 </p>
