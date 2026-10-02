@@ -15,7 +15,7 @@ export function SelectedWork({ onProjectSelect }: SelectedWorkProps) {
       <SectionHeader
         label="SELECTED WORK"
         title="Flagship Projects"
-        description="Four projects spanning computer vision, LLM applications, and machine learning — each with measurable results and real engineering decisions."
+        description="Four projects spanning computer vision, LLM applications, and machine learning, with documented technical decisions, experiments, and implementation results."
       />
 
       <div className="grid md:grid-cols-2 gap-5 md:gap-6">
@@ -29,13 +29,13 @@ export function SelectedWork({ onProjectSelect }: SelectedWorkProps) {
 
 function ProjectCard({ project, index, onSelect }: { project: Project; index: number; onSelect: () => void }) {
   const statusLabel = {
-    active: 'ACTIVE',
+    deployed: 'DEPLOYED',
     'in-progress': 'IN PROGRESS',
     academic: 'ACADEMIC',
   }[project.status];
 
   const statusColor = {
-    active: 'var(--color-success)',
+    deployed: 'var(--color-success)',
     'in-progress': 'var(--color-accent-yellow)',
     academic: 'var(--color-text-secondary)',
   }[project.status];
@@ -47,20 +47,12 @@ function ProjectCard({ project, index, onSelect }: { project: Project; index: nu
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5, delay: index * 0.1, ease: 'easeOut' }}
       whileHover={{ y: -4 }}
-      className="group relative rounded-2xl overflow-hidden cursor-pointer"
+      className="group relative rounded-2xl overflow-hidden"
       style={{
         backgroundColor: 'var(--color-bg-elevated)',
         border: '1px solid var(--color-border)',
       }}
-      onClick={onSelect}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onSelect();
-        }
-      }}
+      
     >
       {/* Visual header */}
       <div className="relative h-44 md:h-48 overflow-hidden">
@@ -124,10 +116,14 @@ function ProjectCard({ project, index, onSelect }: { project: Project; index: nu
 
         {/* Actions */}
         <div className="mt-5 flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5 font-heading text-sm font-medium text-cyan-300 group-hover:gap-2.5 transition-all">
+          <button
+            type="button"
+            onClick={onSelect}
+            className="inline-flex items-center gap-1.5 font-heading text-sm font-medium text-cyan-300 group-hover:gap-2.5 transition-all"
+          >
             View Case Study
             <ArrowRight size={14} />
-          </span>
+          </button>
           <div className="flex items-center gap-3">
             {project.github && (
               <a
