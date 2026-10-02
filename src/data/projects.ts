@@ -181,7 +181,7 @@ export const projects: Project[] = [
       overview:
         'Academic machine-learning project for early Chronic Kidney Disease prediction using patient clinical data.',
       problem:
-        'Early detection of chronic kidney disease from clinical data can support timely medical attention. This project explores applying machine learning to structured patient records.',
+        'This project explores the use of machine learning on structured clinical data for CKD prediction. This project explores applying machine learning to structured patient records.',
       approach:
         'Applied standard ML preprocessing and modeling techniques to a clinical dataset with patient records. The project was built as an academic machine-learning exercise, not as a clinical system.',
       technicalImplementation: [
