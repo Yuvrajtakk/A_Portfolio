@@ -1,10 +1,26 @@
+import { createContext, useContext, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { pulseOpacity, useAmbientMotion } from '@/lib/ambientMotion';
+
+const AmbientContext = createContext(false);
 
 interface ProjectVisualProps {
   visualId: string;
 }
 
 export function ProjectVisual({ visualId }: ProjectVisualProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const active = useAmbientMotion(ref);
+  return (
+    <AmbientContext.Provider value={active}>
+      <div ref={ref} className="w-full h-full">
+        <VisualById visualId={visualId} />
+      </div>
+    </AmbientContext.Provider>
+  );
+}
+
+function VisualById({ visualId }: ProjectVisualProps) {
   switch (visualId) {
     case 'traffic':
       return <TrafficVisual />;
@@ -20,6 +36,7 @@ export function ProjectVisual({ visualId }: ProjectVisualProps) {
 }
 
 function TrafficVisual() {
+  const active = useContext(AmbientContext);
   return (
     <div className="w-full h-full relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a1525, #0d1f35)' }}>
       {/* Road perspective */}
@@ -52,8 +69,7 @@ function TrafficVisual() {
       <motion.div
         className="absolute h-px"
         style={{ left: '15%', top: '35%', width: '80px', background: 'linear-gradient(to right, rgba(34,211,238,0.6), transparent)' }}
-        animate={{ opacity: [0.2, 0.7, 0.2] }}
-        transition={{ duration: 3, repeat: Infinity }}
+        {...pulseOpacity(active, [0.2, 0.7, 0.2], { duration: 3 })}
       />
 
       {/* Data tags */}
@@ -69,6 +85,7 @@ function TrafficVisual() {
 }
 
 function LogisticsVisual() {
+  const active = useContext(AmbientContext);
   const nodes = ['Orders', 'SQL', 'Reviews', 'RAG', 'LLM', 'Answer'];
   return (
     <div className="w-full h-full relative overflow-hidden flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0a1525, #0d1a30)' }}>
@@ -92,8 +109,7 @@ function LogisticsVisual() {
               <motion.div
                 className="w-4 h-px mx-0.5"
                 style={{ background: 'rgba(34,211,238,0.3)' }}
-                animate={{ opacity: [0.2, 0.7, 0.2] }}
-                transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
+                {...pulseOpacity(active, [0.2, 0.7, 0.2], { duration: 1.5, delay: i * 0.2 })}
               />
             )}
           </div>
@@ -111,6 +127,7 @@ function LogisticsVisual() {
 }
 
 function SportsVisual() {
+  const active = useContext(AmbientContext);
   return (
     <div className="w-full h-full relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a1f15, #0d2818, #0a1f15)' }}>
       {/* Field lines */}
@@ -132,9 +149,9 @@ function SportsVisual() {
           stroke="rgba(34,211,238,0.4)"
           strokeWidth="1.5"
           strokeDasharray="4 4"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: [0, 1, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          initial={{ pathLength: 1 }}
+          animate={{ pathLength: active ? [0, 1, 0] : 1 }}
+          transition={active ? { duration: 4, repeat: Infinity, ease: 'easeInOut' } : undefined}
         />
         <motion.path
           d="M260,80 Q280,100 300,120"
@@ -142,9 +159,9 @@ function SportsVisual() {
           stroke="rgba(251,191,36,0.3)"
           strokeWidth="1.5"
           strokeDasharray="4 4"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: [0, 1, 0] }}
-          transition={{ duration: 4, repeat: Infinity, delay: 1, ease: 'easeInOut' }}
+          initial={{ pathLength: 1 }}
+          animate={{ pathLength: active ? [0, 1, 0] : 1 }}
+          transition={active ? { duration: 4, repeat: Infinity, delay: 1, ease: 'easeInOut' } : undefined}
         />
       </motion.svg>
 
@@ -160,6 +177,7 @@ function SportsVisual() {
 }
 
 function CKDVisual() {
+  const active = useContext(AmbientContext);
   return (
     <div className="w-full h-full relative overflow-hidden flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0d1015, #111827, #0d1015)' }}>
       {/* Feature grid */}
@@ -172,8 +190,7 @@ function CKDVisual() {
               backgroundColor: i % 5 === 0 ? 'rgba(34,211,238,0.3)' : 'rgba(56,89,138,0.15)',
               border: '1px solid rgba(56,89,138,0.2)',
             }}
-            animate={{ opacity: [0.3, 0.7, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity, delay: i * 0.08 }}
+            {...pulseOpacity(active, [0.3, 0.7, 0.3], { duration: 2, delay: i * 0.08 })}
           />
         ))}
       </div>
@@ -194,13 +211,13 @@ function DefaultVisual() {
 }
 
 function BoundingBox({ x, y, w, h, label, color, delay }: { x: string; y: string; w: string; h: string; label: string; color: string; delay: number }) {
+  const active = useContext(AmbientContext);
   const borderColor = color === 'cyan' ? 'rgba(34,211,238,0.7)' : 'rgba(251,191,36,0.7)';
   return (
     <motion.div
       className="absolute"
       style={{ left: x, top: y, width: w, height: h, border: `1.5px solid ${borderColor}` }}
-      animate={{ opacity: [0.4, 1, 0.4] }}
-      transition={{ duration: 2.5, repeat: Infinity, delay }}
+      {...pulseOpacity(active, [0.4, 1, 0.4], { duration: 2.5, delay })}
     >
       <span
         className="absolute -top-5 left-0 font-heading text-[9px] font-semibold tracking-wide px-1 rounded-sm whitespace-nowrap"
@@ -213,12 +230,12 @@ function BoundingBox({ x, y, w, h, label, color, delay }: { x: string; y: string
 }
 
 function PlayerDot({ x, y, id, delay }: { x: string; y: string; id: string; delay: number }) {
+  const active = useContext(AmbientContext);
   return (
     <motion.div
       className="absolute"
       style={{ left: x, top: y }}
-      animate={{ opacity: [0.5, 1, 0.5] }}
-      transition={{ duration: 2, repeat: Infinity, delay }}
+      {...pulseOpacity(active, [0.5, 1, 0.5], { duration: 2, delay })}
     >
       <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'rgba(34,211,238,0.7)', border: '2px solid rgba(34,211,238,0.9)' }} />
       <span
