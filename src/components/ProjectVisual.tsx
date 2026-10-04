@@ -60,15 +60,15 @@ function TrafficVisual() {
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-full" style={{ background: 'linear-gradient(to top, rgba(251,191,36,0.3), transparent 60%)' }} />
 
       {/* Bounding boxes */}
-      <BoundingBox x="12%" y="30%" w="60px" h="40px" label="Car" color="cyan" delay={0} />
-      <BoundingBox x="55%" y="45%" w="50px" h="35px" label="Truck" color="cyan" delay={0.5} />
-      <BoundingBox x="30%" y="55%" w="35px" h="55px" label="Person" color="yellow" delay={1} />
-      <BoundingBox x="68%" y="25%" w="45px" h="32px" label="Bus" color="cyan" delay={1.5} />
+      <BoundingBox pos="left-[10%] top-[40%] md:left-[12%] md:top-[36%]" w="60px" h="40px" label="Car" color="cyan" delay={0} />
+      <BoundingBox pos="left-[55%] top-[52%] md:left-[55%] md:top-[45%]" w="50px" h="35px" label="Truck" color="cyan" delay={0.5} />
+      <BoundingBox pos="left-[36%] top-[46%] md:left-[30%] md:top-[52%]" w="35px" h="55px" label="Person" color="yellow" delay={1} />
+      <BoundingBox pos="left-[76%] top-[42%] md:left-[72%] md:top-[36%]" w="45px" h="32px" label="Bus" color="cyan" delay={1.5} />
 
       {/* Tracking trails */}
       <motion.div
-        className="absolute h-px"
-        style={{ left: '15%', top: '35%', width: '80px', background: 'linear-gradient(to right, rgba(34,211,238,0.6), transparent)' }}
+        className="absolute h-px left-[12%] top-[46%] md:left-[15%] md:top-[35%]"
+        style={{ width: '80px', background: 'linear-gradient(to right, rgba(34,211,238,0.6), transparent)' }}
         {...pulseOpacity(active, [0.2, 0.7, 0.2], { duration: 3 })}
       />
 
@@ -210,13 +210,13 @@ function DefaultVisual() {
   );
 }
 
-function BoundingBox({ x, y, w, h, label, color, delay }: { x: string; y: string; w: string; h: string; label: string; color: string; delay: number }) {
+function BoundingBox({ pos, w, h, label, color, delay }: { pos: string; w: string; h: string; label: string; color: string; delay: number }) {
   const active = useContext(AmbientContext);
   const borderColor = color === 'cyan' ? 'rgba(34,211,238,0.7)' : 'rgba(251,191,36,0.7)';
   return (
     <motion.div
-      className="absolute"
-      style={{ left: x, top: y, width: w, height: h, border: `1.5px solid ${borderColor}` }}
+      className={`absolute ${pos}`}
+      style={{ width: w, height: h, border: `1.5px solid ${borderColor}` }}
       {...pulseOpacity(active, [0.4, 1, 0.4], { duration: 2.5, delay })}
     >
       <span
@@ -251,7 +251,7 @@ function PlayerDot({ x, y, id, delay }: { x: string; y: string; id: string; dela
 function DataTag({ label, highlight }: { label: string; highlight?: boolean }) {
   return (
     <span
-      className="px-2 py-0.5 rounded font-heading text-[9px] font-semibold tracking-wider"
+      className="relative z-10 px-2 py-0.5 rounded font-heading text-[9px] font-semibold tracking-wider"
       style={{
         backgroundColor: 'rgba(7,11,20,0.7)',
         color: highlight ? 'var(--color-accent-yellow)' : 'var(--color-text-secondary)',
