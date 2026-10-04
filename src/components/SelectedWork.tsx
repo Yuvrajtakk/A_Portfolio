@@ -47,7 +47,7 @@ function ProjectCard({ project, index, onSelect }: { project: Project; index: nu
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5, delay: index * 0.1, ease: 'easeOut' }}
       whileHover={{ y: -4 }}
-      className="group relative rounded-2xl overflow-hidden"
+      className="group relative flex flex-col rounded-2xl overflow-hidden"
       style={{
         backgroundColor: 'var(--color-bg-elevated)',
         border: '1px solid var(--color-border)',
@@ -77,7 +77,7 @@ function ProjectCard({ project, index, onSelect }: { project: Project; index: nu
       </div>
 
       {/* Card body */}
-      <div className="p-5 md:p-6">
+      <div className="flex flex-1 flex-col p-5 md:p-6">
         <h3 className="font-heading text-lg md:text-xl font-bold text-slate-100 group-hover:text-cyan-300 transition-colors">
           {project.title}
         </h3>
@@ -115,11 +115,11 @@ function ProjectCard({ project, index, onSelect }: { project: Project; index: nu
         )}
 
         {/* Actions */}
-        <div className="mt-5 flex items-center justify-between">
+        <div className="mt-auto pt-5 flex items-center justify-between">
           <button
             type="button"
             onClick={(e) => onSelect(e.currentTarget)}
-            className="inline-flex items-center gap-1.5 font-heading text-sm font-medium text-cyan-300 group-hover:gap-2.5 transition-all"
+            className="inline-flex items-center gap-1.5 py-3 -my-3 font-heading text-sm font-medium text-cyan-300 group-hover:gap-2.5 transition-all"
           >
             View Case Study
             <ArrowRight size={14} />
@@ -131,7 +131,7 @@ function ProjectCard({ project, index, onSelect }: { project: Project; index: nu
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="text-slate-500 hover:text-cyan-300 transition-colors"
+                className="p-3 -m-3 text-slate-500 hover:text-cyan-300 transition-colors"
                 aria-label={`${project.title} on GitHub`}
               >
                 <Github size={16} />
@@ -143,7 +143,7 @@ function ProjectCard({ project, index, onSelect }: { project: Project; index: nu
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="text-slate-500 hover:text-cyan-300 transition-colors"
+                className="p-3 -m-3 text-slate-500 hover:text-cyan-300 transition-colors"
                 aria-label={`${project.title} live demo`}
               >
                 <ExternalLink size={16} />
