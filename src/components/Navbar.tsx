@@ -103,7 +103,7 @@ export function Navbar() {
           {/* Mobile menu button */}
           <button
             ref={menuButtonRef}
-            className="md:hidden text-slate-300 hover:text-cyan-300 transition-colors"
+            className="md:hidden p-[11px] -m-[11px] text-slate-300 hover:text-cyan-300 transition-colors"
             onClick={() => setMobileOpen((open) => !open)}
             aria-label="Toggle navigation"
             aria-expanded={mobileOpen}
@@ -146,7 +146,7 @@ export function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GitHub"
-                  className="text-slate-400 hover:text-cyan-300 transition-colors"
+                  className="p-3 -m-3 text-slate-400 hover:text-cyan-300 transition-colors"
                 >
                   <Github size={20} />
                 </a>
@@ -155,7 +155,7 @@ export function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn"
-                  className="text-slate-400 hover:text-cyan-300 transition-colors"
+                  className="p-3 -m-3 text-slate-400 hover:text-cyan-300 transition-colors"
                 >
                   <Linkedin size={20} />
                 </a>
