@@ -21,7 +21,7 @@ export function ProjectCaseStudy({ project, onClose }: ProjectCaseStudyProps) {
     if (!isOpen) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    const frame = requestAnimationFrame(() => dialogRef.current?.focus());
+    const frame = requestAnimationFrame(() => dialogRef.current?.focus({ preventScroll: true }));
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -76,7 +76,7 @@ export function ProjectCaseStudy({ project, onClose }: ProjectCaseStudyProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.98 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="relative w-full max-w-3xl rounded-2xl overflow-hidden"
+              className="relative w-full max-w-3xl rounded-2xl overflow-clip"
               role="dialog"
               aria-modal="true"
               aria-labelledby="case-study-title"
@@ -85,15 +85,17 @@ export function ProjectCaseStudy({ project, onClose }: ProjectCaseStudyProps) {
               style={{ backgroundColor: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close button */}
-              <button
-                onClick={onClose}
-                className="absolute top-4 right-4 z-10 p-2 rounded-lg transition-colors"
-                style={{ backgroundColor: 'rgba(7,11,20,0.6)', color: 'var(--color-text-secondary)' }}
-                aria-label="Close case study"
-              >
-                <X size={20} />
-              </button>
+              {/* Close button: zero-height sticky row keeps it pinned while the overlay scrolls */}
+              <div className="sticky top-0 z-20 h-0 flex justify-end">
+                <button
+                  onClick={onClose}
+                  className="relative self-start mt-4 mr-4 p-2 rounded-lg transition-colors before:absolute before:-inset-1 before:content-['']"
+                  style={{ backgroundColor: 'rgba(7,11,20,0.6)', color: 'var(--color-text-secondary)' }}
+                  aria-label="Close case study"
+                >
+                  <X size={20} />
+                </button>
+              </div>
 
               {/* Visual header */}
               <div className="relative h-48 md:h-56 overflow-hidden">
