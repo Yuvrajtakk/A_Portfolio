@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { KeyboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { skills, skillCategories } from '@/data/skills';
 import type { SkillCategory } from '@/types';
@@ -13,6 +14,44 @@ export function TechnicalFocus() {
 
   const activeDescription = skillCategories.find((c) => c.name === activeCategory)?.description;
 
+  const tabListRef = useRef<HTMLDivElement>(null);
+  const [fade, setFade] = useState({ start: false, end: false });
+
+  const updateFade = useCallback(() => {
+    const el = tabListRef.current;
+    if (!el) return;
+    const start = el.scrollLeft > 4;
+    const end = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+    setFade((f) => (f.start === start && f.end === end ? f : { start, end }));
+  }, []);
+
+  useEffect(() => {
+    updateFade();
+    window.addEventListener('resize', updateFade);
+    return () => window.removeEventListener('resize', updateFade);
+  }, [updateFade]);
+
+  // Edge fade only while the tab row can scroll (below lg), signalling more categories.
+  const fadeMask =
+    fade.start || fade.end
+      ? `linear-gradient(to right, ${fade.start ? 'transparent, #000 48px' : '#000, #000'}, ${
+          fade.end ? '#000 calc(100% - 48px), transparent' : '#000, #000'
+        })`
+      : undefined;
+
+  const onTabKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const last = skillCategories.length - 1;
+    let next = -1;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = index === last ? 0 : index + 1;
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = index === 0 ? last : index - 1;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = last;
+    if (next < 0) return;
+    e.preventDefault();
+    setActiveCategory(skillCategories[next].name);
+    tabListRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next]?.focus();
+  };
+
   return (
     <SectionWrapper id="skills">
       <SectionHeader
@@ -23,13 +62,27 @@ export function TechnicalFocus() {
 
       <div className="grid lg:grid-cols-[280px_1fr] gap-6 md:gap-8">
         {/* Category list */}
-        <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
-          {skillCategories.map((cat) => {
+        <div
+          ref={tabListRef}
+          role="tablist"
+          aria-label="Skill categories"
+          onScroll={updateFade}
+          className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 max-lg:[mask-image:var(--tab-fade)] max-lg:[-webkit-mask-image:var(--tab-fade)]"
+          style={{ '--tab-fade': fadeMask ?? 'none' } as React.CSSProperties}
+        >
+          {skillCategories.map((cat, catIndex) => {
             const isActive = cat.name === activeCategory;
             const count = skills.filter((s) => s.category === cat.name).length;
             return (
               <button
                 key={cat.name}
+                type="button"
+                role="tab"
+                id={`skill-tab-${catIndex}`}
+                aria-selected={isActive}
+                aria-controls="skill-tabpanel"
+                tabIndex={isActive ? 0 : -1}
+                onKeyDown={(e) => onTabKeyDown(e, catIndex)}
                 onClick={() => setActiveCategory(cat.name)}
                 className={`group relative text-left px-4 py-3 rounded-xl transition-all duration-300 shrink-0 lg:w-full ${
                   isActive ? 'scale-100' : 'hover:scale-[1.01] opacity-70 hover:opacity-100'
@@ -73,6 +126,9 @@ export function TechnicalFocus() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCategory}
+              id="skill-tabpanel"
+              role="tabpanel"
+              aria-labelledby={`skill-tab-${skillCategories.findIndex((c) => c.name === activeCategory)}`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}

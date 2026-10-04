@@ -23,7 +23,7 @@ export function Footer() {
             href={profile.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-slate-500 hover:text-cyan-300 transition-colors"
+            className="p-3 -m-3 text-slate-500 hover:text-cyan-300 transition-colors"
             aria-label="GitHub"
           >
             <Github size={16} />
@@ -32,7 +32,7 @@ export function Footer() {
             href={profile.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-slate-500 hover:text-cyan-300 transition-colors"
+            className="p-3 -m-3 text-slate-500 hover:text-cyan-300 transition-colors"
             aria-label="LinkedIn"
           >
             <Linkedin size={16} />
